@@ -1,115 +1,708 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>QR Studio — Free Custom QR Code Generator</title>
-  <meta name="description" content="Create custom QR codes for links and text. Choose colours, sizes, error correction, and downloadable QR styles including Scan Me and Sticker designs." />
-  <meta name="robots" content="index, follow" />
-  <meta name="author" content="Jafarscript" />
-  <meta name="theme-color" content="#20233a" />
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="QR Studio — Free Custom QR Code Generator" />
-  <meta property="og:description" content="Create, customise, and download square QR code designs in seconds." />
-  <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="QR Studio — Free Custom QR Code Generator" />
-  <meta name="twitter:description" content="Create, customise, and download square QR code designs in seconds." />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "QR Studio",
-    "applicationCategory": "UtilitiesApplication",
-    "operatingSystem": "Web",
-    "description": "A free browser-based QR code generator for links and text, with custom colours, styles, and square PNG downloads.",
-    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
-  }
-  </script>
-  <style>
-    :root { --ink:#172038; --muted:#73798c; --line:#e8e9ed; --paper:#fff; --bg:#f8f8f6; --orange:#ff5a1f; --purple:#4d45d6; }
-    * { box-sizing:border-box; }
-    body { margin:0; min-height:100vh; background:var(--bg); color:var(--ink); font-family:Manrope, sans-serif; }
-    .topbar { height:76px; padding:0 clamp(24px, 5vw, 76px); display:flex; align-items:center; justify-content:space-between; background:#fff; border-bottom:1px solid var(--line); }
-    .brand { display:flex; align-items:center; gap:11px; font-weight:800; letter-spacing:-.8px; font-size:21px; }
-    .mark { display:grid; grid-template-columns:repeat(3,5px); grid-template-rows:repeat(3,5px); gap:2px; width:19px; }
-    .mark i { background:var(--orange); border-radius:1px; } .mark i:nth-child(2),.mark i:nth-child(4),.mark i:nth-child(8){ background:var(--purple); }
-    .nav { color:var(--muted); font-size:13px; font-weight:700; }
-    .shell { max-width:1190px; margin:0 auto; padding:54px 28px 65px; }
-    .eyebrow { color:var(--orange); text-transform:uppercase; letter-spacing:1.7px; font-size:11px; font-weight:800; margin:0 0 10px; }
-    h1 { font-size:clamp(32px,4vw,52px); max-width:650px; letter-spacing:-2.7px; line-height:1.05; margin:0; }
-    .intro { color:var(--muted); margin:16px 0 42px; font-size:15px; line-height:1.7; max-width:580px; }
-    .studio { display:grid; grid-template-columns:minmax(0,1.07fr) minmax(355px,.93fr); gap:24px; align-items:start; }
-    .panel { border:1px solid var(--line); border-radius:18px; background:var(--paper); box-shadow:0 9px 28px rgba(26,31,55,.035); }
-    .controls { padding:29px; }
-    .section-title { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
-    h2 { font-size:15px; margin:0; letter-spacing:-.3px; } .step { width:23px;height:23px; border-radius:50%; background:#fff1eb;color:var(--orange); font:500 11px 'DM Mono'; display:grid;place-items:center; }
-    label { display:block; font-size:12px; font-weight:800; margin:0 0 9px; }
-    textarea { resize:vertical; width:100%; min-height:113px; border:1px solid #dfe1e7; border-radius:10px; font:14px/1.55 'DM Mono'; color:var(--ink); padding:14px; outline:none; transition:.2s; }
-    textarea:focus { border-color:var(--purple); box-shadow:0 0 0 3px #efeeff; }
-    .hint { color:#9297a4; font-size:11px; margin:8px 0 27px; }
-    .divider { border:0; border-top:1px solid var(--line); margin:0 -1px 25px; }
-    .options { display:grid; grid-template-columns:1fr 1fr; gap:20px 18px; }
-    .option label { margin-bottom:9px; } .choice-row { display:flex; gap:8px; }
-    .swatch { border:1px solid #dfe1e7; width:38px; height:38px; padding:3px; background:white; border-radius:9px; cursor:pointer; } input[type=color] { width:100%; height:100%; border:0; padding:0; background:none; cursor:pointer; }
-    select { appearance:none; width:100%; height:38px; padding:0 30px 0 12px; border:1px solid #dfe1e7; border-radius:9px; background:white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='m1 1 5 5 5-5' fill='none' stroke='%23666d7d' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 11px center; color:var(--ink); font:600 12px Manrope; outline:none; }
-    .pills { display:flex; gap:6px; } .pill { flex:1; height:38px; padding:0; border:1px solid #dfe1e7; background:#fff; border-radius:9px; font:700 11px Manrope; cursor:pointer; color:#73798c; } .pill.active { color:var(--purple); border-color:var(--purple); background:#f5f4ff; }
-    .designs { display:grid; grid-template-columns:repeat(4,1fr); gap:7px; margin-top:9px; } .design { padding:7px 3px; background:#fff; border:1px solid #dfe1e7; border-radius:9px; color:#73798c; cursor:pointer; font:700 9px Manrope; } .design.active { border-color:var(--orange); color:var(--orange); background:#fff6f1; }
-    .preview { min-height:540px; background:#20233a; border-color:#20233a; color:white; padding:29px; display:flex; flex-direction:column; }
-    .preview-head { display:flex; justify-content:space-between; align-items:center; } .preview h2 { color:#fff; } .status { font:500 10px 'DM Mono'; color:#b8b5ff; letter-spacing:.3px; } .status:before { content:''; display:inline-block; width:6px;height:6px;background:#89f5bb;border-radius:50%; margin-right:6px; vertical-align:1px; }
-    .qr-stage { flex:1; display:grid; place-items:center; padding:31px 0; overflow:hidden; } .qr-card { background:#fff; border-radius:15px; padding:22px; box-shadow:0 18px 40px #0004; line-height:0; display:flex; flex-direction:column; align-items:center; justify-content:center; max-width:100%; } #qrcode { display:block; width:220px; height:220px; aspect-ratio:1 / 1; flex:0 0 auto; } #qrcode canvas { display:block !important; width:100% !important; height:100% !important; aspect-ratio:1 / 1; object-fit:contain; } #qrcode img { display:none !important; }
-    .scan-label { display:none; margin:0 0 13px; color:#172038; font:800 14px/1 Manrope; letter-spacing:2px; } .scan-label small { display:block; color:#73798c; font:700 8px Manrope; letter-spacing:1.2px; margin-top:6px; }
-    .qr-card.scan { border-radius:0; padding:21px; } .qr-card.scan .scan-label { display:block; text-align:center; } .qr-card.sticker { border:7px solid var(--orange); border-radius:50%; padding:25px; } .qr-card.sticker #qrcode { border-radius:8px; overflow:hidden; } .qr-card.dark { background:#172038; } .qr-card.dark .scan-label { display:block; color:#fff; } .qr-card.dark .scan-label small { color:#c5c8d5; }
-    .preview-bottom { border-top:1px solid #ffffff1a; padding-top:19px; display:flex; justify-content:space-between; align-items:flex-end; gap:10px; } .filename { font:500 11px 'DM Mono'; color:#aeb2c5; line-height:1.7; } .download { border:0; border-radius:9px; background:var(--orange); color:#fff; padding:11px 14px; cursor:pointer; font:800 12px Manrope; transition:transform .15s, background .15s; } .download:hover { transform:translateY(-2px); background:#ef4910; }
-    .toast { position:fixed; bottom:25px; left:50%; transform:translate(-50%,20px); opacity:0; background:var(--ink); color:#fff; border-radius:9px; padding:11px 16px; font-size:12px; transition:.25s; pointer-events:none; } .toast.show { opacity:1; transform:translate(-50%,0); }
-    @media (max-width:820px) { .studio{grid-template-columns:1fr}.preview{min-height:470px}.shell{padding-top:38px}.nav{display:none} }
-    @media (max-width:440px) { .shell{padding-inline:16px}.controls,.preview{padding:21px}.options{grid-template-columns:1fr}.qr-stage{padding:25px 0}.topbar{padding-inline:20px} }
-  </style>
-</head>
-<body>
-  <header class="topbar"><div class="brand"><span class="mark"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>QR Studio</div><div class="nav">Simple tools for sharing better</div></header>
-  <main class="shell">
-    <p class="eyebrow">Quick &amp; beautifully simple</p><h1>Free custom QR code generator.</h1><p class="intro">Turn any link or text into a custom QR code in seconds. Add it to menus, posters, packaging, presentations, and flyers—anywhere someone can point a camera.</p>
-    <div class="studio">
-      <section class="panel controls">
-        <div class="section-title"><h2>What should it open?</h2><span class="step">01</span></div>
-        <label for="content">LINK OR TEXT</label><textarea id="content" spellcheck="false">https://example.com</textarea><p class="hint">Your QR code updates as you type.</p><hr class="divider">
-        <div class="section-title"><h2>Make it yours</h2><span class="step">02</span></div>
-        <div class="options">
-          <div class="option"><label for="dark">FOREGROUND</label><div class="choice-row"><span class="swatch"><input id="dark" type="color" value="#172038"></span><select id="darkPreset"><option value="#172038">Midnight</option><option value="#4d45d6">Violet</option><option value="#ff5a1f">Tangerine</option><option value="#0d796e">Teal</option></select></div></div>
-          <div class="option"><label for="light">BACKGROUND</label><div class="choice-row"><span class="swatch"><input id="light" type="color" value="#ffffff"></span><select id="lightPreset"><option value="#ffffff">White</option><option value="#fff8e8">Warm cream</option><option value="#eef6ff">Sky</option><option value="#f5f1ff">Lavender</option></select></div></div>
-          <div class="option"><label>SIZE</label><div class="pills" id="sizes"><button class="pill" data-size="160">S</button><button class="pill active" data-size="220">M</button><button class="pill" data-size="300">L</button></div></div>
-          <div class="option"><label for="level">ERROR CORRECTION</label><select id="level"><option value="M">Standard</option><option value="L">Low</option><option value="Q">High</option><option value="H">Maximum</option></select></div>
-        </div>
-        <div class="option" style="margin-top:21px"><label>DESIGN STYLE</label><div class="designs" id="designs"><button class="design active" data-design="classic">Classic</button><button class="design" data-design="scan">SCAN ME</button><button class="design" data-design="sticker">Sticker</button><button class="design" data-design="dark">Dark card</button></div></div>
-      </section>
-      <section class="panel preview"><div class="preview-head"><h2>Your QR code</h2><span class="status">READY TO SCAN</span></div><div class="qr-stage"><div class="qr-card" id="qrCard"><div class="scan-label">SCAN ME<small>POINT YOUR CAMERA HERE</small></div><div id="qrcode"></div></div></div><div class="preview-bottom"><span class="filename">qr-studio-code.png<br><span id="dimensions">220 × 220 px</span></span><button class="download" id="download">Download PNG ↓</button></div></section>
-    </div>
-  </main><div class="toast" id="toast">Your QR code has been saved.</div>
-  <script>
-    const $=s=>document.querySelector(s), content=$('#content'), dark=$('#dark'), light=$('#light'), level=$('#level'), dimensions=$('#dimensions');
-    let size=220, qr, design='classic';
-    const errorLevel={L:QRCode.CorrectLevel.L,M:QRCode.CorrectLevel.M,Q:QRCode.CorrectLevel.Q,H:QRCode.CorrectLevel.H};
-    function render(){ const value=content.value.trim()||' '; const qrEl=$('#qrcode'); qrEl.replaceChildren(); qrEl.style.width=size+'px'; qrEl.style.height=size+'px'; const darkColor=design==='dark' ? '#ffffff' : dark.value, lightColor=design==='dark' ? '#172038' : light.value; qr=new QRCode('qrcode',{text:value,width:size,height:size,colorDark:darkColor,colorLight:lightColor,correctLevel:errorLevel[level.value]}); dimensions.textContent=`${size} × ${size} px`; }
-    function debounce(fn,wait=230){let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),wait)}}
-    const redraw=debounce(render); [content,dark,light,level].forEach(el=>el.addEventListener('input',redraw)); level.addEventListener('change',render);
-    $('#darkPreset').addEventListener('change',e=>{dark.value=e.target.value;render()}); $('#lightPreset').addEventListener('change',e=>{light.value=e.target.value;render()});
-    $('#sizes').addEventListener('click',e=>{if(!e.target.matches('.pill'))return; size=+e.target.dataset.size; document.querySelectorAll('.pill').forEach(x=>x.classList.toggle('active',x===e.target));render()});
-    $('#designs').addEventListener('click',e=>{if(!e.target.matches('.design'))return; design=e.target.dataset.design; document.querySelectorAll('.design').forEach(x=>x.classList.toggle('active',x===e.target)); $('#qrCard').className='qr-card '+(design==='classic'?'':design); render()});
-    function roundedRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill()}
-    $('#download').addEventListener('click',()=>{
-      const source=$('#qrcode canvas'), out=document.createElement('canvas'), ctx=out.getContext('2d');
-      const edge=720, pad=70, labelSpace=(design==='scan'||design==='dark')?100:0, qrSize=edge-pad*2-labelSpace;
-      out.width=out.height=edge;
-      ctx.fillStyle=design==='dark'?'#172038':'#ffffff';ctx.fillRect(0,0,edge,edge);
-      if(design==='sticker'){ctx.fillStyle='#ff5a1f';ctx.beginPath();ctx.arc(edge/2,edge/2,edge/2-15,0,Math.PI*2);ctx.fill();ctx.fillStyle='#fff';ctx.fillRect(pad,pad,edge-pad*2,edge-pad*2);}
-      if(design==='scan'||design==='dark'){ctx.textAlign='center';ctx.fillStyle=design==='dark'?'#ffffff':'#172038';ctx.font='800 38px Manrope, sans-serif';ctx.fillText('SCAN ME',edge/2,76);ctx.fillStyle=design==='dark'?'#c5c8d5':'#73798c';ctx.font='700 15px Manrope, sans-serif';ctx.fillText('POINT YOUR CAMERA HERE',edge/2,104);}
-      const x=(edge-qrSize)/2,y=pad+labelSpace;ctx.drawImage(source,x,y,qrSize,qrSize);
-      const a=document.createElement('a');a.download='qr-studio-'+design+'.png';a.href=out.toDataURL('image/png');a.click();const toast=$('#toast');toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2200)
-    });
-    render();
-  </script>
-</body></html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QR Studio — Free Custom QR Code Generator</title>
+    <meta
+      name="description"
+      content="Create custom QR codes for links and text. Choose colours, sizes, error correction, and downloadable QR styles including Scan Me and Sticker designs."
+    />
+    <meta name="robots" content="index, follow" />
+    <meta name="author" content="Jafarscript" />
+    <meta name="theme-color" content="#20233a" />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:title"
+      content="QR Studio — Free Custom QR Code Generator"
+    />
+    <meta
+      property="og:description"
+      content="Create, customise, and download square QR code designs in seconds."
+    />
+    <meta name="twitter:card" content="summary" />
+    <meta
+      name="twitter:title"
+      content="QR Studio — Free Custom QR Code Generator"
+    />
+    <meta
+      name="twitter:description"
+      content="Create, customise, and download square QR code designs in seconds."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "QR Studio",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Web",
+        "description": "A free browser-based QR code generator for links and text, with custom colours, styles, and square PNG downloads.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      }
+    </script>
+    <style>
+      :root {
+        --ink: #172038;
+        --muted: #73798c;
+        --line: #e8e9ed;
+        --paper: #fff;
+        --bg: #f8f8f6;
+        --orange: #ff5a1f;
+        --purple: #4d45d6;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: Manrope, sans-serif;
+      }
+      .topbar {
+        height: 76px;
+        padding: 0 clamp(24px, 5vw, 76px);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #fff;
+        border-bottom: 1px solid var(--line);
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        font-weight: 800;
+        letter-spacing: -0.8px;
+        font-size: 21px;
+      }
+      .mark {
+        display: grid;
+        grid-template-columns: repeat(3, 5px);
+        grid-template-rows: repeat(3, 5px);
+        gap: 2px;
+        width: 19px;
+      }
+      .mark i {
+        background: var(--orange);
+        border-radius: 1px;
+      }
+      .mark i:nth-child(2),
+      .mark i:nth-child(4),
+      .mark i:nth-child(8) {
+        background: var(--purple);
+      }
+      .nav {
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .shell {
+        max-width: 1190px;
+        margin: 0 auto;
+        padding: 54px 28px 65px;
+      }
+      .eyebrow {
+        color: var(--orange);
+        text-transform: uppercase;
+        letter-spacing: 1.7px;
+        font-size: 11px;
+        font-weight: 800;
+        margin: 0 0 10px;
+      }
+      h1 {
+        font-size: clamp(32px, 4vw, 52px);
+        max-width: 650px;
+        letter-spacing: -2.7px;
+        line-height: 1.05;
+        margin: 0;
+      }
+      .intro {
+        color: var(--muted);
+        margin: 16px 0 42px;
+        font-size: 15px;
+        line-height: 1.7;
+        max-width: 580px;
+      }
+      .studio {
+        display: grid;
+        grid-template-columns: minmax(0, 1.07fr) minmax(355px, 0.93fr);
+        gap: 24px;
+        align-items: start;
+      }
+      .panel {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: var(--paper);
+        box-shadow: 0 9px 28px rgba(26, 31, 55, 0.035);
+      }
+      .controls {
+        padding: 29px;
+      }
+      .section-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+      h2 {
+        font-size: 15px;
+        margin: 0;
+        letter-spacing: -0.3px;
+      }
+      .step {
+        width: 23px;
+        height: 23px;
+        border-radius: 50%;
+        background: #fff1eb;
+        color: var(--orange);
+        font: 500 11px "DM Mono";
+        display: grid;
+        place-items: center;
+      }
+      label {
+        display: block;
+        font-size: 12px;
+        font-weight: 800;
+        margin: 0 0 9px;
+      }
+      textarea {
+        resize: vertical;
+        width: 100%;
+        min-height: 113px;
+        border: 1px solid #dfe1e7;
+        border-radius: 10px;
+        font: 14px/1.55 "DM Mono";
+        color: var(--ink);
+        padding: 14px;
+        outline: none;
+        transition: 0.2s;
+      }
+      textarea:focus {
+        border-color: var(--purple);
+        box-shadow: 0 0 0 3px #efeeff;
+      }
+      .hint {
+        color: #9297a4;
+        font-size: 11px;
+        margin: 8px 0 27px;
+      }
+      .divider {
+        border: 0;
+        border-top: 1px solid var(--line);
+        margin: 0 -1px 25px;
+      }
+      .options {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px 18px;
+      }
+      .option label {
+        margin-bottom: 9px;
+      }
+      .choice-row {
+        display: flex;
+        gap: 8px;
+      }
+      .swatch {
+        border: 1px solid #dfe1e7;
+        width: 38px;
+        height: 38px;
+        padding: 3px;
+        background: white;
+        border-radius: 9px;
+        cursor: pointer;
+      }
+      input[type="color"] {
+        width: 100%;
+        height: 100%;
+        border: 0;
+        padding: 0;
+        background: none;
+        cursor: pointer;
+      }
+      select {
+        appearance: none;
+        width: 100%;
+        height: 38px;
+        padding: 0 30px 0 12px;
+        border: 1px solid #dfe1e7;
+        border-radius: 9px;
+        background: white
+          url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='m1 1 5 5 5-5' fill='none' stroke='%23666d7d' stroke-width='1.5'/%3E%3C/svg%3E")
+          no-repeat right 11px center;
+        color: var(--ink);
+        font: 600 12px Manrope;
+        outline: none;
+      }
+      .pills {
+        display: flex;
+        gap: 6px;
+      }
+      .pill {
+        flex: 1;
+        height: 38px;
+        padding: 0;
+        border: 1px solid #dfe1e7;
+        background: #fff;
+        border-radius: 9px;
+        font: 700 11px Manrope;
+        cursor: pointer;
+        color: #73798c;
+      }
+      .pill.active {
+        color: var(--purple);
+        border-color: var(--purple);
+        background: #f5f4ff;
+      }
+      .designs {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 7px;
+        margin-top: 9px;
+      }
+      .design {
+        padding: 7px 3px;
+        background: #fff;
+        border: 1px solid #dfe1e7;
+        border-radius: 9px;
+        color: #73798c;
+        cursor: pointer;
+        font: 700 9px Manrope;
+      }
+      .design.active {
+        border-color: var(--orange);
+        color: var(--orange);
+        background: #fff6f1;
+      }
+      .preview {
+        min-height: 540px;
+        background: #20233a;
+        border-color: #20233a;
+        color: white;
+        padding: 29px;
+        display: flex;
+        flex-direction: column;
+      }
+      .preview-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .preview h2 {
+        color: #fff;
+      }
+      .status {
+        font: 500 10px "DM Mono";
+        color: #b8b5ff;
+        letter-spacing: 0.3px;
+      }
+      .status:before {
+        content: "";
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        background: #89f5bb;
+        border-radius: 50%;
+        margin-right: 6px;
+        vertical-align: 1px;
+      }
+      .qr-stage {
+        flex: 1;
+        display: grid;
+        place-items: center;
+        padding: 31px 0;
+        overflow: hidden;
+      }
+      .qr-card {
+        background: #fff;
+        border-radius: 15px;
+        padding: 22px;
+        box-shadow: 0 18px 40px #0004;
+        line-height: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        max-width: 100%;
+      }
+      #qrcode {
+        display: block;
+        width: 220px;
+        height: 220px;
+        aspect-ratio: 1 / 1;
+        flex: 0 0 auto;
+      }
+      #qrcode canvas {
+        display: block !important;
+        width: 100% !important;
+        height: 100% !important;
+        aspect-ratio: 1 / 1;
+        object-fit: contain;
+      }
+      #qrcode img {
+        display: none !important;
+      }
+      .scan-label {
+        display: none;
+        margin: 0 0 13px;
+        color: #172038;
+        font: 800 14px/1 Manrope;
+        letter-spacing: 2px;
+      }
+      .scan-label small {
+        display: block;
+        color: #73798c;
+        font: 700 8px Manrope;
+        letter-spacing: 1.2px;
+        margin-top: 6px;
+      }
+      .qr-card.scan {
+        border-radius: 0;
+        padding: 21px;
+      }
+      .qr-card.scan .scan-label {
+        display: block;
+        text-align: center;
+      }
+      .qr-card.sticker {
+        border: 7px solid var(--orange);
+        border-radius: 50%;
+        padding: 25px;
+      }
+      .qr-card.sticker #qrcode {
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .qr-card.dark {
+        background: #172038;
+      }
+      .qr-card.dark .scan-label {
+        display: block;
+        color: #fff;
+      }
+      .qr-card.dark .scan-label small {
+        color: #c5c8d5;
+      }
+      .preview-bottom {
+        border-top: 1px solid #ffffff1a;
+        padding-top: 19px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 10px;
+      }
+      .filename {
+        font: 500 11px "DM Mono";
+        color: #aeb2c5;
+        line-height: 1.7;
+      }
+      .download {
+        border: 0;
+        border-radius: 9px;
+        background: var(--orange);
+        color: #fff;
+        padding: 11px 14px;
+        cursor: pointer;
+        font: 800 12px Manrope;
+        transition:
+          transform 0.15s,
+          background 0.15s;
+      }
+      .download:hover {
+        transform: translateY(-2px);
+        background: #ef4910;
+      }
+      .toast {
+        position: fixed;
+        bottom: 25px;
+        left: 50%;
+        transform: translate(-50%, 20px);
+        opacity: 0;
+        background: var(--ink);
+        color: #fff;
+        border-radius: 9px;
+        padding: 11px 16px;
+        font-size: 12px;
+        transition: 0.25s;
+        pointer-events: none;
+      }
+      .toast.show {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+      @media (max-width: 820px) {
+        .studio {
+          grid-template-columns: 1fr;
+        }
+        .preview {
+          min-height: 470px;
+        }
+        .shell {
+          padding-top: 38px;
+        }
+        .nav {
+          display: none;
+        }
+      }
+      @media (max-width: 440px) {
+        .shell {
+          padding-inline: 16px;
+        }
+        .controls,
+        .preview {
+          padding: 21px;
+        }
+        .options {
+          grid-template-columns: 1fr;
+        }
+        .qr-stage {
+          padding: 25px 0;
+        }
+        .topbar {
+          padding-inline: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <span class="mark"
+          ><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span
+        >QR Studio
+      </div>
+      <div class="nav">Simple tools for sharing better</div>
+    </header>
+    <main class="shell">
+      <p class="eyebrow">Quick &amp; beautifully simple</p>
+      <h1>Free custom QR code generator.</h1>
+      <p class="intro">
+        Turn any link or text into a custom QR code in seconds. Add it to menus,
+        posters, packaging, presentations, and flyers—anywhere someone can point
+        a camera.
+      </p>
+      <div class="studio">
+        <section class="panel controls">
+          <div class="section-title">
+            <h2>What should it open?</h2>
+            <span class="step">01</span>
+          </div>
+          <label for="content">LINK OR TEXT</label
+          ><textarea id="content" spellcheck="false">
+https://example.com</textarea
+          >
+          <p class="hint">Your QR code updates as you type.</p>
+          <hr class="divider" />
+          <div class="section-title">
+            <h2>Make it yours</h2>
+            <span class="step">02</span>
+          </div>
+          <div class="options">
+            <div class="option">
+              <label for="dark">FOREGROUND</label>
+              <div class="choice-row">
+                <span class="swatch"
+                  ><input id="dark" type="color" value="#172038" /></span
+                ><select id="darkPreset">
+                  <option value="#172038">Midnight</option>
+                  <option value="#4d45d6">Violet</option>
+                  <option value="#ff5a1f">Tangerine</option>
+                  <option value="#0d796e">Teal</option>
+                </select>
+              </div>
+            </div>
+            <div class="option">
+              <label for="light">BACKGROUND</label>
+              <div class="choice-row">
+                <span class="swatch"
+                  ><input id="light" type="color" value="#ffffff" /></span
+                ><select id="lightPreset">
+                  <option value="#ffffff">White</option>
+                  <option value="#fff8e8">Warm cream</option>
+                  <option value="#eef6ff">Sky</option>
+                  <option value="#f5f1ff">Lavender</option>
+                </select>
+              </div>
+            </div>
+            <div class="option">
+              <label>SIZE</label>
+              <div class="pills" id="sizes">
+                <button class="pill" data-size="160">S</button
+                ><button class="pill active" data-size="220">M</button
+                ><button class="pill" data-size="300">L</button>
+              </div>
+            </div>
+            <div class="option">
+              <label for="level">ERROR CORRECTION</label
+              ><select id="level">
+                <option value="M">Standard</option>
+                <option value="L">Low</option>
+                <option value="Q">High</option>
+                <option value="H">Maximum</option>
+              </select>
+            </div>
+          </div>
+          <div class="option" style="margin-top: 21px">
+            <label>DESIGN STYLE</label>
+            <div class="designs" id="designs">
+              <button class="design active" data-design="classic">
+                Classic</button
+              ><button class="design" data-design="scan">SCAN ME</button
+              ><button class="design" data-design="sticker">Sticker</button
+              ><button class="design" data-design="dark">Dark card</button>
+            </div>
+          </div>
+        </section>
+        <section class="panel preview">
+          <div class="preview-head">
+            <h2>Your QR code</h2>
+            <span class="status">READY TO SCAN</span>
+          </div>
+          <div class="qr-stage">
+            <div class="qr-card" id="qrCard">
+              <div class="scan-label">
+                SCAN ME<small>POINT YOUR CAMERA HERE</small>
+              </div>
+              <div id="qrcode"></div>
+            </div>
+          </div>
+          <div class="preview-bottom">
+            <span class="filename"
+              >qr-studio-code.png<br /><span id="dimensions"
+                >220 × 220 px</span
+              ></span
+            ><button class="download" id="download">Download PNG ↓</button>
+          </div>
+        </section>
+      </div>
+    </main>
+    <div class="toast" id="toast">Your QR code has been saved.</div>
+    <script>
+      const $ = (s) => document.querySelector(s),
+        content = $("#content"),
+        dark = $("#dark"),
+        light = $("#light"),
+        level = $("#level"),
+        dimensions = $("#dimensions");
+      let size = 220,
+        qr,
+        design = "classic";
+      const errorLevel = {
+        L: QRCode.CorrectLevel.L,
+        M: QRCode.CorrectLevel.M,
+        Q: QRCode.CorrectLevel.Q,
+        H: QRCode.CorrectLevel.H,
+      };
+      function render() {
+        const value = content.value.trim() || " ";
+        const qrEl = $("#qrcode");
+        qrEl.replaceChildren();
+        qrEl.style.width = size + "px";
+        qrEl.style.height = size + "px";
+        const darkColor = design === "dark" ? "#ffffff" : dark.value,
+          lightColor = design === "dark" ? "#172038" : light.value;
+        qr = new QRCode("qrcode", {
+          text: value,
+          width: size,
+          height: size,
+          colorDark: darkColor,
+          colorLight: lightColor,
+          correctLevel: errorLevel[level.value],
+        });
+        dimensions.textContent = `${size} × ${size} px`;
+      }
+      function debounce(fn, wait = 230) {
+        let t;
+        return (...a) => {
+          clearTimeout(t);
+          t = setTimeout(() => fn(...a), wait);
+        };
+      }
+      const redraw = debounce(render);
+      [content, dark, light, level].forEach((el) =>
+        el.addEventListener("input", redraw),
+      );
+      level.addEventListener("change", render);
+      $("#darkPreset").addEventListener("change", (e) => {
+        dark.value = e.target.value;
+        render();
+      });
+      $("#lightPreset").addEventListener("change", (e) => {
+        light.value = e.target.value;
+        render();
+      });
+      $("#sizes").addEventListener("click", (e) => {
+        if (!e.target.matches(".pill")) return;
+        size = +e.target.dataset.size;
+        document
+          .querySelectorAll(".pill")
+          .forEach((x) => x.classList.toggle("active", x === e.target));
+        render();
+      });
+      $("#designs").addEventListener("click", (e) => {
+        if (!e.target.matches(".design")) return;
+        design = e.target.dataset.design;
+        document
+          .querySelectorAll(".design")
+          .forEach((x) => x.classList.toggle("active", x === e.target));
+        $("#qrCard").className =
+          "qr-card " + (design === "classic" ? "" : design);
+        render();
+      });
+      function roundedRect(ctx, x, y, w, h, r) {
+        ctx.beginPath();
+        ctx.roundRect(x, y, w, h, r);
+        ctx.fill();
+      }
+      $("#download").addEventListener("click", () => {
+        const source = $("#qrcode canvas"),
+          out = document.createElement("canvas"),
+          ctx = out.getContext("2d");
+        const edge = 720,
+          pad = 70,
+          labelSpace = design === "scan" || design === "dark" ? 100 : 0,
+          qrSize = edge - pad * 2 - labelSpace;
+        out.width = out.height = edge;
+        ctx.fillStyle = design === "dark" ? "#172038" : "#ffffff";
+        ctx.fillRect(0, 0, edge, edge);
+        if (design === "sticker") {
+          ctx.fillStyle = "#ff5a1f";
+          ctx.beginPath();
+          ctx.arc(edge / 2, edge / 2, edge / 2 - 15, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = "#fff";
+          ctx.fillRect(pad, pad, edge - pad * 2, edge - pad * 2);
+        }
+        if (design === "scan" || design === "dark") {
+          ctx.textAlign = "center";
+          ctx.fillStyle = design === "dark" ? "#ffffff" : "#172038";
+          ctx.font = "800 38px Manrope, sans-serif";
+          ctx.fillText("SCAN ME", edge / 2, 76);
+          ctx.fillStyle = design === "dark" ? "#c5c8d5" : "#73798c";
+          ctx.font = "700 15px Manrope, sans-serif";
+          ctx.fillText("POINT YOUR CAMERA HERE", edge / 2, 104);
+        }
+        const x = (edge - qrSize) / 2,
+          y = pad + labelSpace;
+        ctx.drawImage(source, x, y, qrSize, qrSize);
+        const a = document.createElement("a");
+        a.download = "qr-studio-" + design + ".png";
+        a.href = out.toDataURL("image/png");
+        a.click();
+        const toast = $("#toast");
+        toast.classList.add("show");
+        setTimeout(() => toast.classList.remove("show"), 2200);
+      });
+      render();
+    </script>
+  </body>
+</html>
